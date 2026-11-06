@@ -1,0 +1,78 @@
+{
+  "version": "1.0",
+
+  "configuracion": {
+    "moneda": "MXN",
+    "porcentajeIntermediario": 35
+  },
+
+  "estructuras": {
+    "arco": {
+      "basico": {
+        "precioBase": 0
+      },
+      "smart": {
+        "precioBase": 0
+      },
+      "elite": {
+        "precioBase": 0
+      },
+      "platinum": {
+        "precioBase": 0
+      }
+    },
+
+    "medioShimmer": {
+      "smart": {
+        "precioBase": 0
+      },
+      "elite": {
+        "precioBase": 0
+      },
+      "platinum": {
+        "precioBase": 0
+      }
+    },
+
+    "shimmerCompleto": {
+      "smart": {
+        "precioBase": 0
+      },
+      "elite": {
+        "precioBase": 0
+      },
+      "platinum": {
+        "precioBase": 0
+      }
+    },
+
+    "paletaMadera": {
+      "smart": {
+        "precioBase": 0
+      },
+      "elite": {
+        "precioBase": 0
+      },
+      "platinum": {
+        "precioBase": 0
+      }
+    }
+  },
+
+  "extras": {
+    "transporte": {
+      "activo": true,
+      "precio": 0
+    },
+
+    "ayudanteExtra": {
+      "activo": true,
+      "precio": 0
+    },
+
+    "horaExtra": {
+      "activo": true,
+      "precio": 0
+    }
+  }
+}

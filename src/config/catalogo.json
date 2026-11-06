@@ -1,0 +1,137 @@
+{
+  "version": "1.0",
+  "nombreProyecto": "Cotizador Inteligente para Decoración con Globos",
+
+  "canalesVenta": [
+    "directo",
+    "intermediario"
+  ],
+
+  "estructuras": [
+    {
+      "id": "arco",
+      "nombre": "Aro, Arco o Guirnalda",
+      "nivelesDisponibles": [
+        "basico",
+        "smart",
+        "elite",
+        "platinum"
+      ]
+    },
+    {
+      "id": "medioShimmer",
+      "nombre": "Medio Shimmer",
+      "nivelesDisponibles": [
+        "smart",
+        "elite",
+        "platinum"
+      ]
+    },
+    {
+      "id": "shimmerCompleto",
+      "nombre": "Shimmer Completo",
+      "nivelesDisponibles": [
+        "smart",
+        "elite",
+        "platinum"
+      ]
+    },
+    {
+      "id": "paletaMadera",
+      "nombre": "Paleta de Madera",
+      "nivelesDisponibles": [
+        "smart",
+        "elite",
+        "platinum"
+      ]
+    }
+  ],
+
+  "decoraciones": [
+    "clasica",
+    "organica",
+    "follaje",
+    "impresionVinil",
+    "impresionPolipropileno"
+  ],
+
+  "globos": [
+    "latexSencillo",
+    "latexDoble"
+  ],
+
+  "tonos": [
+    "mate",
+    "mateReflex",
+    "cromado",
+    "metalico",
+    "transparenteConfetti"
+  ],
+
+  "articulosRenta": [
+    "letreroMDF",
+    "letreroMDFPersonalizado",
+    "letreroNeon",
+    "follajeExtra",
+    "mesaOro",
+    "mesaOroMultiple",
+    "pedestalPastel"
+  ],
+
+  "clasificacion": {
+    "basico": 1,
+    "smart": 2,
+    "elite": 3,
+    "platinum": 4
+  },
+
+  "permitidosPorEstructura": {
+    "arco": {
+      "articulosRenta": []
+    },
+
+    "medioShimmer": {
+      "articulosRenta": [
+        "letreroMDF",
+        "letreroMDFPersonalizado",
+        "letreroNeon",
+        "follajeExtra",
+        "mesaOro",
+        "mesaOroMultiple",
+        "pedestalPastel"
+      ]
+    },
+
+    "shimmerCompleto": {
+      "articulosRenta": [
+        "letreroMDF",
+        "letreroMDFPersonalizado",
+        "letreroNeon",
+        "follajeExtra",
+        "mesaOro",
+        "mesaOroMultiple",
+        "pedestalPastel"
+      ]
+    },
+
+    "paletaMadera": {
+      "articulosRenta": [
+        "letreroMDF",
+        "letreroMDFPersonalizado",
+        "letreroNeon",
+        "follajeExtra",
+        "mesaOro",
+        "mesaOroMultiple",
+        "pedestalPastel"
+      ]
+    }
+  },
+
+  "ia": {
+    "calculaPrecios": false,
+    "calculaPaquetes": false,
+    "generaPropuestas": true,
+    "generaObservaciones": true,
+    "generaDocumentos": true
+  }
+}
