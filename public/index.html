@@ -301,6 +301,8 @@
     .primary-button:active:not(:disabled) { transform: translateY(0); }
     .primary-button:disabled { opacity: .76; cursor: wait; }
     .primary-button svg { width: 18px; height: 18px; }
+    .download-button { margin-top: 16px; }
+    .download-button:disabled { cursor: not-allowed; }
     .spinner { animation: spin .8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .form-footnote {
@@ -733,6 +735,7 @@
             <span class="draft-badge">Borrador automático</span>
           </div>
           <p class="proposal-copy" id="proposal-copy">Aquí aparecerá un texto de presentación basado en el diseño que elijas, listo para personalizar antes de compartir con tu cliente.</p>
+          <button class="primary-button download-button" id="download-button" type="button" disabled> Descargar Propuesta</button>
           <p class="proposal-foot">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>
             Borrador editable generado a partir de tu cotización.
@@ -756,6 +759,8 @@
     const quotePlaceholder = document.querySelector("#quote-placeholder");
     const quoteResult = document.querySelector("#quote-result");
     const proposalCopy = document.querySelector("#proposal-copy");
+    const downloadButton = document.querySelector("#download-button");
+    let cotizacionActual = null;
 
     const labels = {
       estructura: {
@@ -823,6 +828,8 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      cotizacionActual = null;
+      downloadButton.disabled = true;
       errorMessage.textContent = "";
       errorMessage.classList.remove("is-visible");
       proposalCopy.textContent = "Generando propuesta comercial...";
@@ -888,11 +895,52 @@
         document.querySelector("#result-currency").textContent = result.moneda;
         quotePlaceholder.hidden = true;
         quoteResult.hidden = false;
+        if (result.propuestaComercial && !result.errorPropuesta) {
+          cotizacionActual = {
+            ...selection,
+            propuestaComercial: result.propuestaComercial
+          };
+          downloadButton.disabled = false;
+        }
       } catch (error) {
         proposalCopy.textContent = "No fue posible generar la propuesta comercial.";
         showError(error instanceof Error ? error.message : "Ocurrió un error inesperado al generar la cotización.");
       } finally {
         setLoading(false);
+      }
+    });
+
+    downloadButton.addEventListener("click", async () => {
+      if (!cotizacionActual) {
+        return;
+      }
+
+      downloadButton.disabled = true;
+      errorMessage.textContent = "";
+      errorMessage.classList.remove("is-visible");
+
+      try {
+        const response = await fetch("/api/cotizar/documento", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(cotizacionActual)
+        });
+
+        if (!response.ok) {
+          const details = await response.json().catch(() => null);
+          throw new Error(details?.error || `No se pudo generar el documento (HTTP ${response.status}).`);
+        }
+
+        const url = URL.createObjectURL(await response.blob());
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "propuesta-cotizacion.docx";
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (error) {
+        showError(error instanceof Error ? error.message : "Ocurrió un error inesperado al descargar la propuesta.");
+      } finally {
+        downloadButton.disabled = !cotizacionActual;
       }
     });
   </script>
