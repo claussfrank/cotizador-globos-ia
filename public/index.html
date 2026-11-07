@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5f8">
+  <meta name="description" content="Diseña una decoración con globos y genera una cotización en segundos.">
+  <title>Nube Estudio — Cotizador inteligente</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --primary: #612572;
+      --primary-dark: #431450;
+      --primary-soft: #f2eaf5;
+      --ink: #28232c;
+      --muted: #77717d;
+      --line: #ece8ef;
+      --surface: #fff;
+      --canvas: #f8f6f9;
+      --success: #29745b;
+      --shadow: 0 2px 6px rgb(42 26 48 / 4%), 0 14px 36px rgb(42 26 48 / 5%);
+      --radius: 22px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 87% 1%, rgb(230 214 238 / 26%), transparent 29rem),
+        var(--canvas);
+    }
+
+    button, select, input { font: inherit; }
+    button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible {
+      outline: 3px solid #bd8bc9;
+      outline-offset: 3px;
+    }
+
+    .topbar {
+      height: 72px;
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgb(87 57 97 / 8%);
+      background: rgb(255 255 255 / 78%);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: white;
+      border-radius: 14px;
+      background: var(--primary);
+      box-shadow: 0 5px 12px rgb(97 37 114 / 22%);
+    }
+
+    .brand-mark svg { width: 22px; height: 22px; }
+    .brand-copy { display: grid; gap: 1px; }
+    .brand-name { font-size: 15px; font-weight: 750; letter-spacing: -.3px; }
+    .brand-caption { color: var(--muted); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+
+    .topbar-right { display: flex; align-items: center; gap: 17px; }
+    .help-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #625b68;
+      font-size: 13px;
+      font-weight: 550;
+      text-decoration: none;
+    }
+    .help-link svg { width: 17px; height: 17px; }
+    .avatar {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      border: 1px solid #e8dced;
+      border-radius: 50%;
+      background: #f6eef8;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 43px 0 52px;
+    }
+
+    .intro { margin-bottom: 28px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 12px;
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .eyebrow svg { width: 16px; height: 16px; }
+    h1 {
+      max-width: 700px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(32px, 6vw, 48px);
+      font-weight: 500;
+      letter-spacing: -1.5px;
+      line-height: 1.08;
+    }
+    .intro-copy {
+      max-width: 590px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .workspace {
+      display: grid;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid rgb(72 48 81 / 8%);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .form-card { padding: 22px 18px 18px; }
+    .card-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .heading-icon {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      border-radius: 14px;
+      background: var(--primary-soft);
+    }
+    .heading-icon svg { width: 20px; height: 20px; }
+    .card-heading h2 {
+      margin: 1px 0 5px;
+      font-size: 17px;
+      font-weight: 720;
+      letter-spacing: -.25px;
+    }
+    .card-heading p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+    .field-grid { display: grid; gap: 17px; }
+    .field { min-width: 0; }
+    .choice-section {
+      grid-column: 1 / -1;
+      min-width: 0;
+      margin-top: 2px;
+      margin: 2px 0 0;
+      padding: 0;
+      border: 0;
+    }
+    .choice-title {
+      display: block;
+      margin: 0 0 9px;
+      color: #403947;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .choice-card {
+      min-height: 51px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: #403947;
+      border: 1px solid #e8e3eb;
+      border-radius: 13px;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+    .choice-card:hover { border-color: #cbb8d1; background: #fdfbfe; }
+    .choice-card:has(input:checked) {
+      border-color: #9c70a8;
+      background: #faf6fb;
+      box-shadow: inset 0 0 0 1px rgb(97 37 114 / 9%);
+    }
+    .choice-card input {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      margin: 0;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .choice-copy { display: grid; gap: 2px; min-width: 0; }
+    .choice-name { color: #38313d; font-size: 12px; font-weight: 650; }
+    .choice-price { color: var(--muted); font-size: 10px; }
+    .extra-list { display: grid; gap: 8px; }
+    .extra-choice { min-height: 48px; }
+    .field label {
+      display: block;
+      margin: 0 0 8px;
+      color: #403947;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .select-wrap { position: relative; }
+    .select-wrap select {
+      width: 100%;
+      height: 49px;
+      padding: 0 42px 0 14px;
+      appearance: none;
+      color: var(--ink);
+      border: 1px solid #e8e3eb;
+      border-radius: 13px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 13px;
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
+    .select-wrap select:hover { border-color: #cbb8d1; }
+    .select-wrap select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgb(97 37 114 / 11%); }
+    .select-arrow {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      width: 17px;
+      height: 17px;
+      color: #756d79;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .field-hint {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 16px 0 20px;
+      padding: 11px 12px;
+      color: #65566b;
+      border-radius: 12px;
+      background: #faf6fb;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .field-hint svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--primary); }
+
+    .primary-button {
+      width: 100%;
+      min-height: 51px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      padding: 0 18px;
+      color: white;
+      border: 0;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #712d82, #572064);
+      box-shadow: 0 5px 12px rgb(97 37 114 / 21%), 0 2px 3px rgb(44 17 52 / 12%);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+    }
+    .primary-button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 17px rgb(97 37 114 / 27%), 0 2px 3px rgb(44 17 52 / 12%);
+    }
+    .primary-button:active:not(:disabled) { transform: translateY(0); }
+    .primary-button:disabled { opacity: .76; cursor: wait; }
+    .primary-button svg { width: 18px; height: 18px; }
+    .spinner { animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .form-footnote {
+      margin: 12px 0 0;
+      color: #89828d;
+      text-align: center;
+      font-size: 10px;
+    }
+
+    .results-column { display: grid; gap: 16px; }
+    .quote-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 285px;
+      padding: 22px;
+      color: white;
+      border: 0;
+      background:
+        radial-gradient(ellipse at 100% 0%, rgb(204 155 219 / 27%), transparent 45%),
+        linear-gradient(145deg, #692b79, #4b1b5b 74%);
+      box-shadow: 0 12px 30px rgb(78 30 92 / 20%);
+    }
+    .quote-card::after {
+      position: absolute;
+      right: -54px;
+      bottom: -96px;
+      width: 220px;
+      height: 220px;
+      border: 1px solid rgb(255 255 255 / 9%);
+      border-radius: 50%;
+      box-shadow: 0 0 0 24px rgb(255 255 255 / 3%), 0 0 0 48px rgb(255 255 255 / 2%);
+      content: "";
+      pointer-events: none;
+    }
+    .quote-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .quote-label {
+      margin: 0;
+      color: rgb(255 255 255 / 76%);
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .quote-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: white;
+      border: 1px solid rgb(255 255 255 / 18%);
+      border-radius: 12px;
+      background: rgb(255 255 255 / 10%);
+    }
+    .quote-icon svg { width: 18px; height: 18px; }
+    .quote-level {
+      position: relative;
+      z-index: 1;
+      margin: 22px 0 2px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 8vw, 42px);
+      font-weight: 500;
+      letter-spacing: -.8px;
+      line-height: 1.1;
+      text-transform: capitalize;
+    }
+    .quote-description {
+      position: relative;
+      z-index: 1;
+      margin: 6px 0 17px;
+      color: rgb(255 255 255 / 72%);
+      font-size: 12px;
+    }
+    .quote-divider { position: relative; z-index: 1; height: 1px; background: rgb(255 255 255 / 18%); }
+    .quote-breakdown {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 10px;
+      padding-top: 14px;
+    }
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      color: rgb(255 255 255 / 78%);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .breakdown-row strong { color: #fff; font-size: 12px; font-weight: 650; text-align: right; }
+    .breakdown-row.total-row {
+      align-items: flex-end;
+      margin-top: 2px;
+      padding-top: 12px;
+      color: #fff;
+      border-top: 1px solid rgb(255 255 255 / 20%);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .breakdown-row.total-row strong {
+      font-size: clamp(25px, 6vw, 30px);
+      font-weight: 700;
+      letter-spacing: -.8px;
+      line-height: 1;
+    }
+    .currency-tag {
+      align-self: flex-end;
+      margin-left: 5px;
+      padding: 4px 7px;
+      color: white;
+      border: 1px solid rgb(255 255 255 / 25%);
+      border-radius: 7px;
+      background: rgb(255 255 255 / 10%);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+    .empty-note {
+      position: relative;
+      z-index: 1;
+      max-width: 260px;
+      color: rgb(255 255 255 / 78%);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .proposal-card { padding: 19px 18px; }
+    .proposal-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 13px;
+    }
+    .proposal-heading .heading-icon { width: 34px; height: 34px; border-radius: 12px; }
+    .proposal-heading .heading-icon svg { width: 18px; height: 18px; }
+    .proposal-heading h2 { margin: 0; font-size: 14px; font-weight: 720; letter-spacing: -.2px; }
+    .draft-badge {
+      margin-left: auto;
+      padding: 5px 8px;
+      color: #66516e;
+      border-radius: 20px;
+      background: #f4eff6;
+      font-size: 9px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .proposal-copy {
+      min-height: 66px;
+      margin: 0;
+      color: #6f6874;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .proposal-copy.is-ready { color: #423a47; }
+    .proposal-foot {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 13px 0 0;
+      padding-top: 11px;
+      color: #8a828e;
+      border-top: 1px solid #f0edf1;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+    .proposal-foot svg { width: 14px; height: 14px; flex: 0 0 auto; }
+    .error-message {
+      display: none;
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      color: #8b2f3b;
+      border: 1px solid #f1d5d9;
+      border-radius: 11px;
+      background: #fff7f7;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .error-message.is-visible { display: block; }
+
+    .page-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 24px;
+      color: #928b96;
+      font-size: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .topbar { height: 78px; padding: 0 38px; }
+      main { width: min(1120px, calc(100% - 64px)); padding-top: 54px; }
+      .intro { margin-bottom: 32px; }
+      .form-card { padding: 27px 26px 22px; }
+      .field-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; }
+      .extra-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .extra-choice { align-items: flex-start; }
+      .field-hint { margin-top: 19px; }
+      .quote-card { padding: 25px; }
+      .proposal-card { padding: 21px 22px; }
+    }
+
+    @media (min-width: 900px) {
+      .topbar { padding: 0 max(42px, calc((100% - 1220px) / 2)); }
+      main { padding-top: 59px; }
+      .workspace { grid-template-columns: minmax(0, 1.1fr) minmax(330px, .78fr); gap: 22px; }
+      .results-column { position: sticky; top: 22px; }
+      .form-card { padding: 28px; }
+      .quote-card { min-height: 275px; padding: 27px; }
+      .proposal-card { padding: 21px 22px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Nube Estudio, inicio">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7.4 17.4h9.2a4.2 4.2 0 0 0 .4-8.4 5.2 5.2 0 0 0-10-1.1 4.8 4.8 0 0 0 .4 9.5Z"/>
+          <path d="m11 10 2-2m-2 2 2 2m-2-2-2-2m2 2-2 2"/>
+        </svg>
+      </span>
+      <span class="brand-copy">
+        <span class="brand-name">Nube Estudio</span>
+        <span class="brand-caption">Cotizador inteligente</span>
+      </span>
+    </a>
+    <div class="topbar-right">
+      <a class="help-link" href="mailto:hola@nubeestudio.mx">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.7 1.2c-.6 1-2.3 1.3-2.3 2.8"/><path d="M12 16.5h.01"/>
+        </svg>
+        <span>Ayuda</span>
+      </a>
+      <span class="avatar" aria-label="Perfil de usuario">NE</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3.5v3m0 11v3m8.5-8.5h-3m-11 0h-3m14-6-2.1 2.1M8.6 15.4 6.5 17.5m11 0-2.1-2.1m-6.8-6.8L6.5 6.5"/><circle cx="12" cy="12" r="4"/>
+        </svg>
+        Cotizaciones <span aria-hidden="true">/</span> Nueva propuesta
+      </p>
+      <h1 id="page-title">Diseña una celebración que flota.</h1>
+      <p class="intro-copy">Elige los detalles de tu montaje. En segundos tendrás una cotización clara, lista para convertirse en una propuesta inolvidable.</p>
+    </section>
+
+    <div class="workspace">
+      <section class="card form-card" aria-labelledby="form-title">
+        <div class="card-heading">
+          <span class="heading-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 20h16M6.5 20V9.5L12 5l5.5 4.5V20M9 20v-6h6v6M4 9l8-6 8 6"/>
+            </svg>
+          </span>
+          <span>
+            <h2 id="form-title">Personaliza tu montaje</h2>
+            <p>Selecciona una opción en cada categoría para calcular tu nivel.</p>
+          </span>
+        </div>
+
+        <form id="quote-form">
+          <div class="field-grid">
+            <div class="field">
+              <label for="estructura">Estructura</label>
+              <div class="select-wrap">
+                <select id="estructura" name="estructura" required>
+                  <option value="arco">Aro, arco o guirnalda</option>
+                  <option value="medioShimmer">Medio Shimmer</option>
+                  <option value="shimmerCompleto">Shimmer completo</option>
+                  <option value="paletaMadera">Paleta de madera</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="decoracion">Decoración</label>
+              <div class="select-wrap">
+                <select id="decoracion" name="decoracion" required>
+                  <option value="clasica">Clásica</option>
+                  <option value="organica">Orgánica</option>
+                  <option value="follaje">Follaje</option>
+                  <option value="impresionVinil">Impresión en vinil</option>
+                  <option value="impresionPolipropileno">Impresión en polipropileno</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="globo">Tipo de globo</label>
+              <div class="select-wrap">
+                <select id="globo" name="globo" required>
+                  <option value="latexSencillo">Látex sencillo</option>
+                  <option value="latexDoble">Látex doble</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="tono">Tono</label>
+              <div class="select-wrap">
+                <select id="tono" name="tono" required>
+                  <option value="mate">Mate</option>
+                  <option value="mateReflex">Mate y reflex</option>
+                  <option value="cromado">Cromado</option>
+                  <option value="metalico">Metálico</option>
+                  <option value="transparenteConfetti">Transparente con confeti</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+              </div>
+            </div>
+
+            <fieldset class="choice-section">
+              <legend class="choice-title">Canal de Venta</legend>
+              <div class="choice-grid">
+                <label class="choice-card" for="canal-directo">
+                  <input id="canal-directo" type="radio" name="canalVenta" value="directo" checked>
+                  <span class="choice-copy"><span class="choice-name">Directo</span></span>
+                </label>
+                <label class="choice-card" for="canal-intermediario">
+                  <input id="canal-intermediario" type="radio" name="canalVenta" value="intermediario">
+                  <span class="choice-copy">
+                    <span class="choice-name">Intermediario</span>
+                    <span class="choice-price">+35%</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="choice-section">
+              <legend class="choice-title">Extras</legend>
+              <div class="extra-list">
+                <label class="choice-card extra-choice" for="extra-transporte">
+                  <input id="extra-transporte" type="checkbox" name="extras" value="transporte">
+                  <span class="choice-copy">
+                    <span class="choice-name">Transporte</span>
+                    <span class="choice-price">+$500</span>
+                  </span>
+                </label>
+                <label class="choice-card extra-choice" for="extra-ayudante">
+                  <input id="extra-ayudante" type="checkbox" name="extras" value="ayudanteExtra">
+                  <span class="choice-copy">
+                    <span class="choice-name">Ayudante Extra</span>
+                    <span class="choice-price">+$600</span>
+                  </span>
+                </label>
+                <label class="choice-card extra-choice" for="extra-hora">
+                  <input id="extra-hora" type="checkbox" name="extras" value="horaExtra">
+                  <span class="choice-copy">
+                    <span class="choice-name">Hora Extra</span>
+                    <span class="choice-price">+$500</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+
+          <p class="field-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>
+            El nivel se determina automáticamente según la opción de mayor categoría en tu diseño.
+          </p>
+          <button class="primary-button" id="submit-button" type="submit">
+            <svg id="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.4-6.4-2.1 2.1M7.7 16.3l-2.1 2.1m12.8 0-2.1-2.1M7.7 7.7 5.6 5.6"/><circle cx="12" cy="12" r="4"/></svg>
+            <span id="button-label">Generar Cotización</span>
+          </button>
+          <p class="form-footnote">Precios calculados con el catálogo vigente de Nube Estudio.</p>
+          <p class="error-message" id="error-message" role="alert"></p>
+        </form>
+      </section>
+
+      <aside class="results-column" aria-label="Resultado de la cotización">
+        <section class="card quote-card" aria-live="polite">
+          <div class="quote-top">
+            <p class="quote-label">Tu cotización</p>
+            <span class="quote-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5h6l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1h1Z"/><path d="M14 3.5v5h5m-9 4h5m-5 4h5"/></svg>
+            </span>
+          </div>
+          <div id="quote-placeholder">
+            <p class="quote-level">Tu diseño,<br>tu momento.</p>
+            <p class="empty-note">Completa las opciones y genera tu cotización para descubrir el nivel y precio de tu montaje.</p>
+          </div>
+          <div id="quote-result" hidden>
+            <p class="quote-level" id="result-level"></p>
+            <p class="quote-description" id="result-description">El nivel se ajusta al detalle de mayor categoría seleccionado.</p>
+            <div class="quote-divider"></div>
+            <div class="quote-breakdown">
+              <div class="breakdown-row">
+                <span>Precio Base</span>
+                <strong id="result-base"></strong>
+              </div>
+              <div class="breakdown-row">
+                <span id="extras-label">Extras</span>
+                <strong id="result-extras"></strong>
+              </div>
+              <div class="breakdown-row">
+                <span>Incremento Intermediario</span>
+                <strong id="result-intermediario"></strong>
+              </div>
+              <div class="breakdown-row total-row">
+                <span>Total Final</span>
+                <span><strong id="result-total"></strong><span class="currency-tag" id="result-currency"></span></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card proposal-card" aria-labelledby="proposal-title">
+          <div class="proposal-heading">
+            <span class="heading-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 15 .9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z"/></svg>
+            </span>
+            <h2 id="proposal-title">Propuesta Comercial IA</h2>
+            <span class="draft-badge">Borrador automático</span>
+          </div>
+          <p class="proposal-copy" id="proposal-copy">Aquí aparecerá un texto de presentación basado en el diseño que elijas, listo para personalizar antes de compartir con tu cliente.</p>
+          <p class="proposal-foot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>
+            Borrador editable generado a partir de tu cotización.
+          </p>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="page-footer">
+      <span>Nube Estudio · Decoraciones que hacen momentos</span>
+      <span>Los precios corresponden a la configuración seleccionada.</span>
+    </footer>
+  </main>
+
+  <script>
+    const form = document.querySelector("#quote-form");
+    const submitButton = document.querySelector("#submit-button");
+    const buttonLabel = document.querySelector("#button-label");
+    const buttonIcon = document.querySelector("#button-icon");
+    const errorMessage = document.querySelector("#error-message");
+    const quotePlaceholder = document.querySelector("#quote-placeholder");
+    const quoteResult = document.querySelector("#quote-result");
+    const proposalCopy = document.querySelector("#proposal-copy");
+
+    const labels = {
+      estructura: {
+        arco: "Aro, arco o guirnalda",
+        medioShimmer: "Medio Shimmer",
+        shimmerCompleto: "Shimmer completo",
+        paletaMadera: "Paleta de madera"
+      },
+      decoracion: {
+        clasica: "decoración clásica",
+        organica: "decoración orgánica",
+        follaje: "decoración con follaje",
+        impresionVinil: "impresión en vinil",
+        impresionPolipropileno: "impresión en polipropileno"
+      },
+      globo: {
+        latexSencillo: "globo de látex sencillo",
+        latexDoble: "globo de látex doble"
+      },
+      tono: {
+        mate: "tono mate",
+        mateReflex: "tonos mate y reflex",
+        cromado: "tono cromado",
+        metalico: "tono metálico",
+        transparenteConfetti: "tono transparente con confeti"
+      },
+      nivel: {
+        basico: "Básico",
+        smart: "Smart",
+        elite: "Elite",
+        platinum: "Platinum"
+      }
+    };
+
+    const extrasCatalog = {
+      transporte: { label: "Transporte", precio: 500 },
+      ayudanteExtra: { label: "Ayudante Extra", precio: 600 },
+      horaExtra: { label: "Hora Extra", precio: 500 }
+    };
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.classList.add("is-visible");
+    }
+
+    function setLoading(isLoading) {
+      submitButton.disabled = isLoading;
+      buttonLabel.textContent = isLoading ? "Calculando..." : "Generar Cotización";
+      if (isLoading) {
+        buttonIcon.classList.add("spinner");
+        buttonIcon.innerHTML = '<circle cx="12" cy="12" r="9" stroke-opacity=".28"/><path d="M21 12a9 9 0 0 0-9-9"/>';
+      } else {
+        buttonIcon.classList.remove("spinner");
+        buttonIcon.innerHTML = '<path d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.4-6.4-2.1 2.1M7.7 16.3l-2.1 2.1m12.8 0-2.1-2.1M7.7 7.7 5.6 5.6"/><circle cx="12" cy="12" r="4"/>';
+      }
+    }
+
+    function formatCurrency(amount, currency) {
+      return new Intl.NumberFormat("es-MX", {
+        style: "currency",
+        currency,
+        maximumFractionDigits: 0
+      }).format(amount);
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      errorMessage.textContent = "";
+      errorMessage.classList.remove("is-visible");
+      proposalCopy.textContent = "Generando propuesta comercial...";
+      setLoading(true);
+
+      const formData = new FormData(form);
+      const selection = {
+        estructura: formData.get("estructura"),
+        decoracion: formData.get("decoracion"),
+        globo: formData.get("globo"),
+        tono: formData.get("tono"),
+        canalVenta: formData.get("canalVenta"),
+        extras: formData.getAll("extras")
+      };
+
+      try {
+        const response = await fetch("/api/cotizar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(selection)
+        });
+
+        if (!response.ok) {
+          const details = await response.json().catch(() => null);
+          throw new Error(details?.error || `No se pudo calcular la cotización (HTTP ${response.status}).`);
+        }
+
+        const result = await response.json();
+        proposalCopy.textContent = result.errorPropuesta
+          ? "No fue posible generar la propuesta comercial."
+          : result.propuestaComercial || "No fue posible generar la propuesta comercial.";
+        proposalCopy.classList.add("is-ready");
+
+        const nivel = labels.nivel[result.nivel];
+        const precioBase = Number(result.precioBase ?? result.precio);
+        if (!nivel || !Number.isFinite(precioBase) || precioBase < 0 || !result.moneda) {
+          throw new Error("La respuesta del servidor no contiene un nivel, precio o moneda válidos.");
+        }
+
+        const extrasTotal = selection.extras.reduce((total, extra) => {
+          const item = extrasCatalog[extra];
+          if (!item) {
+            throw new Error(`El extra "${extra}" no está disponible.`);
+          }
+          return total + item.precio;
+        }, 0);
+        const montoIntermediario = selection.canalVenta === "intermediario"
+          ? Math.round((precioBase + extrasTotal) * 0.35)
+          : 0;
+        const totalFinal = precioBase + extrasTotal + montoIntermediario;
+        const extrasNombre = selection.extras
+          .map((extra) => extrasCatalog[extra].label)
+          .join(", ");
+
+        document.querySelector("#result-level").textContent = nivel;
+        document.querySelector("#result-base").textContent = formatCurrency(precioBase, result.moneda);
+        document.querySelector("#result-extras").textContent = formatCurrency(extrasTotal, result.moneda);
+        document.querySelector("#extras-label").textContent = extrasNombre
+          ? `Extras · ${extrasNombre}`
+          : "Extras";
+        document.querySelector("#result-intermediario").textContent = formatCurrency(montoIntermediario, result.moneda);
+        document.querySelector("#result-total").textContent = formatCurrency(totalFinal, result.moneda);
+        document.querySelector("#result-currency").textContent = result.moneda;
+        quotePlaceholder.hidden = true;
+        quoteResult.hidden = false;
+      } catch (error) {
+        proposalCopy.textContent = "No fue posible generar la propuesta comercial.";
+        showError(error instanceof Error ? error.message : "Ocurrió un error inesperado al generar la cotización.");
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

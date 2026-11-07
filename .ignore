@@ -1,0 +1,9 @@
+node_modules/
+.env
+.DS_Store
+
+src/config/precios.json
+
+*.db
+*.sqlite
+*.log

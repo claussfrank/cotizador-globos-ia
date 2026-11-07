@@ -1,78 +1,70 @@
 {
   "version": "1.0",
-
   "configuracion": {
     "moneda": "MXN",
     "porcentajeIntermediario": 35
   },
-
   "estructuras": {
     "arco": {
       "basico": {
-        "precioBase": 0
+        "precioBase": 1700
       },
       "smart": {
-        "precioBase": 0
+        "precioBase": 2600
       },
       "elite": {
-        "precioBase": 0
+        "precioBase": 2950
       },
       "platinum": {
-        "precioBase": 0
+        "precioBase": 3900
       }
     },
-
     "medioShimmer": {
       "smart": {
-        "precioBase": 0
+        "precioBase": 3900
       },
       "elite": {
-        "precioBase": 0
+        "precioBase": 5500
       },
       "platinum": {
-        "precioBase": 0
+        "precioBase": 6500
       }
     },
-
     "shimmerCompleto": {
       "smart": {
-        "precioBase": 0
+        "precioBase": 4500
       },
       "elite": {
-        "precioBase": 0
+        "precioBase": 6000
       },
       "platinum": {
-        "precioBase": 0
+        "precioBase": 7200
       }
     },
-
     "paletaMadera": {
       "smart": {
-        "precioBase": 0
+        "precioBase": 3500
       },
       "elite": {
-        "precioBase": 0
+        "precioBase": 5300
       },
       "platinum": {
-        "precioBase": 0
+        "precioBase": 6200
       }
     }
   },
-
   "extras": {
     "transporte": {
       "activo": true,
-      "precio": 0
+      "precio": 500
     },
-
     "ayudanteExtra": {
       "activo": true,
-      "precio": 0
+      "precio": 600
     },
-
     "horaExtra": {
       "activo": true,
-      "precio": 0
+      "precio": 500
     }
   }
 }
