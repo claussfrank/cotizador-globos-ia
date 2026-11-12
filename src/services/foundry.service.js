@@ -54,6 +54,7 @@ try {
 
   let response;
   try {
+     console.log("Invocando agente:", agentName);
     response = await openAIClient.responses.create(
       {
         input: `Genera una propuesta comercial para esta cotización:\n${datos}`
@@ -68,6 +69,13 @@ try {
       }
     );
   } catch (error) {
+    console.error("ERROR ORIGINAL:");
+    console.error(error);
+
+  if (error?.cause) {
+    console.error("ERROR CAUSE:");
+    console.error(error.cause);
+  }
     throw new Error(
       `No se pudo obtener la propuesta comercial del agente "${agentName}".`,
       { cause: error }
