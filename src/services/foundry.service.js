@@ -17,6 +17,22 @@ export async function generarPropuestaComercial(datosCotizacion) {
     throw new TypeError("Los datos de cotización deben ser un objeto.");
   }
 
+  console.log("FOUNDRY_PROJECT_ENDPOINT:", projectEndpoint);
+console.log("FOUNDRY_AGENT_NAME:", agentName);
+
+const credential = new DefaultAzureCredential();
+
+try {
+  const token = await credential.getToken(
+    "https://cognitiveservices.azure.com/.default"
+  );
+
+  console.log("TOKEN OK:", !!token);
+} catch (tokenError) {
+  console.error("TOKEN ERROR:");
+  console.error(tokenError);
+}
+
   const client = new AIProjectClient(
     projectEndpoint,
     new DefaultAzureCredential()
