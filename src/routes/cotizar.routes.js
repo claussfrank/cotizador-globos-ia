@@ -109,12 +109,18 @@ router.post("/", async (req, res) => {
       errorPropuesta: null
     });
   } catch (error) {
-    res.json({
-      ...cotizacion,
-      propuestaComercial: null,
-      errorPropuesta: error.message
-    });
-  }
+
+  console.error("FOUNDRY ERROR:");
+  console.error(error);
+  console.error(error?.message);
+  console.error(error?.stack);
+
+  res.json({
+    ...cotizacion,
+    propuestaComercial: null,
+    errorPropuesta: error.message
+  });
+}
 
 });
 
